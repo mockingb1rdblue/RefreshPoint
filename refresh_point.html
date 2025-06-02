@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-T-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refresh Point - CO Leave & Breathe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2d3748; /* dark:bg-gray-700 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a5568; /* dark:bg-gray-500 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #718096; /* dark:bg-gray-400 */
+        }
+
+        /* Theme variables */
+        .light {
+            --bg-primary: #fffbeb; /* yellow-50 */
+            --bg-secondary: #fef3c7; /* yellow-100 */
+            --text-primary: #78350f; /* amber-900 */
+            --text-secondary: #92400e; /* amber-800 */
+            --border-color: #fcd34d; /* amber-300 */
+            --accent-color: #f59e0b; /* amber-500 */
+            --button-text-color: #fffbeb; 
+            --callout-bg-color: #fef9c3; 
+            --callout-border-color: var(--accent-color);
+            --callout-text-primary: var(--text-primary);
+            --callout-text-secondary: var(--text-secondary);
+            --form-placeholder-bg: var(--bg-primary);
+            --header-logo-img-filter: none; /* No filter for light mode if SVG is dark */
+        }
+        .dark {
+            --bg-primary: #1f2937; /* gray-800 */
+            --bg-secondary: #374151; /* gray-700 */
+            --text-primary: #f3f4f6; /* gray-100 */
+            --text-secondary: #d1d5db; /* gray-300 */
+            --border-color: #4b5563; /* gray-600 */
+            --accent-color: #60a5fa; /* blue-400 */
+            --button-text-color: #1f2937; 
+            --callout-bg-color: #2c3645; 
+            --callout-border-color: var(--accent-color);
+            --callout-text-primary: var(--text-primary);
+            --callout-text-secondary: var(--text-secondary);
+            --form-placeholder-bg: var(--bg-primary);
+            --header-logo-img-filter: invert(95%) sepia(10%) saturate(150%) hue-rotate(180deg) brightness(100%) contrast(90%); /* Makes dark SVG appear light/white-ish */
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .content-card {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .nav-link {
+            color: var(--text-secondary);
+        }
+        .nav-link.active {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        .prose h1, .prose h2, .prose h3 { color: var(--text-primary); }
+        .prose p, .prose ul, .prose li, .prose ol { color: var(--text-secondary); }
+        .prose strong { color: var(--text-primary); font-weight: 600; } 
+        .prose a { color: var(--accent-color); }
+        .prose blockquote { border-left-color: var(--accent-color); background-color: var(--bg-secondary); color: var(--text-secondary); }
+        .prose blockquote p { color: var(--text-secondary); }
+        .prose .callout {
+            background-color: var(--callout-bg-color);
+            border-left: 4px solid var(--callout-border-color);
+            padding: 0.75rem 1rem; 
+            margin-top: 1rem; 
+            margin-bottom: 1rem;
+            border-radius: 0.375rem; 
+        }
+        .prose .callout p {
+             color: var(--callout-text-secondary);
+        }
+         .prose .callout strong {
+             color: var(--callout-text-primary);
+        }
+        /* Styles for the medical form facsimile page */
+        .form-section { background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; }
+        .form-section h3 { color: var(--accent-color); font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;}
+        .form-field { margin-bottom: 0.75rem; }
+        .form-field label { display: block; font-weight: 500; color: var(--text-primary); margin-bottom: 0.25rem; }
+        .form-field p, .form-field span { color: var(--text-secondary); font-size: 0.9rem; }
+        .form-field .input-placeholder { border: 1px dashed var(--border-color); background-color: var(--form-placeholder-bg); padding: 0.5rem; border-radius: 0.25rem; min-height: 38px; }
+        .note { font-size: 0.8rem; font-style: italic; color: var(--text-secondary); margin-top: 0.25rem; }
+        .required-ast { color: red; margin-left: 2px; }
+        .header-logo-img {
+            height: 2.5rem; /* 40px */
+            width: auto;
+            filter: var(--header-logo-img-filter);
+            cursor: pointer;
+        }
+        .header-title-clickable {
+            cursor: pointer;
+        }
+
+
+        /* Accordion styles */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease-in-out; 
+        }
+        .accordion-content-inner {
+            padding: 1rem; 
+        }
+        
+        .accordion-button.active svg.chevron {
+            transform: rotate(180deg);
+        }
+        .theme-toggle-button {
+            background-color: var(--accent-color);
+            color: var(--button-text-color);
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem; 
+            font-size: 0.875rem; 
+            font-weight: 500; 
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+        .theme-toggle-button svg {
+            margin-right: 0.5rem;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        // Function to toggle theme
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            html.classList.toggle('light');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+            updateThemeToggleButton();
+        }
+
+        // Function to set initial theme based on localStorage or system preference
+        function setInitialTheme() {
+            const storedTheme = localStorage.getItem('theme');
+            const html = document.documentElement;
+            if (storedTheme === 'light') {
+                html.classList.remove('dark');
+                html.classList.add('light');
+            } else if (storedTheme === 'dark') {
+                html.classList.remove('light');
+                html.classList.add('dark');
+            } else { 
+                html.classList.add('dark');
+                html.classList.remove('light');
+            }
+            updateThemeToggleButton();
+        }
+
+        function updateThemeToggleButton() {
+            const themeToggleButton = document.getElementById('themeToggleButton');
+            if (themeToggleButton) {
+                if (document.documentElement.classList.contains('dark')) {
+                    themeToggleButton.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12h2.25m.386-6.364 1.591 1.591" />
+                        </svg>
+                        Looking for Light?
+                    `;
+                } else {
+                    themeToggleButton.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21c3.73 0 7.01-1.737 9.002-4.498Z" />
+                        </svg>
+                        Looking for Dark?
+                    `;
+                }
+            }
+        }
+
+        // Navigation logic
+        function showPage(pageId) {
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.add('hidden');
+            });
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+            }
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('onclick') && link.getAttribute('onclick').includes(pageId)) {
+                    link.classList.add('active');
+                }
+            });
+            window.scrollTo(0, 0); 
+            initializeAccordionsForPage(pageId); 
+        }
+
+        // Accordion logic
+        function toggleAccordion(button) {
+            const contentWrapper = button.nextElementSibling; 
+            const contentInner = contentWrapper.querySelector('.accordion-content-inner'); 
+            button.classList.toggle('active');
+
+            if (contentWrapper.style.maxHeight && contentWrapper.style.maxHeight !== '0px') { 
+                contentWrapper.style.maxHeight = null; 
+            } else { 
+                void contentInner.offsetHeight; 
+                contentWrapper.style.maxHeight = contentInner.scrollHeight + "px";
+            }
+        }
+        
+        function handleAccordionClick() { 
+            toggleAccordion(this);
+        }
+
+        function initializeAccordionsForPage(pageId) {
+            const pageElement = document.getElementById(pageId);
+            if (pageElement) {
+                pageElement.querySelectorAll('.accordion-button').forEach(button => {
+                    const newButton = button.cloneNode(true); 
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', handleAccordionClick);
+                    
+                    const contentWrapper = newButton.nextElementSibling;
+                    if (contentWrapper) {
+                        contentWrapper.style.maxHeight = null; 
+                        newButton.classList.remove('active'); 
+                    }
+                });
+            }
+        }
+
+        // Set theme on initial load
+        document.addEventListener('DOMContentLoaded', () => {
+            setInitialTheme();
+            
+            // Make logo and title clickable to go home
+            const logoContainer = document.getElementById('logoContainer');
+            if(logoContainer) {
+                logoContainer.addEventListener('click', () => showPage('home'));
+            }
+
+            showPage('home'); 
+            
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+            if(mobileMenuButton && mobileMenu){
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        });
+        
+        function closeMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            if(mobileMenu) {
+                mobileMenu.classList.add('hidden');
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <header class="sticky top-0 z-50 shadow-md" style="background-color: var(--bg-secondary); border-bottom: 1px solid var(--border-color);">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div id="logoContainer" class="flex items-center cursor-pointer">
+                    <!-- 
+                        INSTRUCTION FOR USER: 
+                        1. Download your SVG logo from the Google Drive link: 
+                           https://drive.google.com/file/d/1cgM8j6DBXikRAyvECvOGRIOoj9MClMMG/preview
+                        2. Save it as 'refresh_point_logo.svg' in the SAME DIRECTORY as this HTML file.
+                        3. Ensure the SVG is designed to be white or a light color. 
+                           The CSS variable --header-logo-img-filter attempts to make a dark SVG light in dark mode,
+                           but a natively light/white SVG will work best.
+                    -->
+                    <img src="refresh_point_logo.svg" alt="Refresh Point Logo" class="header-logo-img mr-2" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/40x40/var(--text-primary-hex,cccccc)/var(--bg-primary-hex,333333)?text=RP&font=inter'; this.style.filter='none';">
+                    <h1 class="text-lg sm:text-xl font-bold header-title-clickable" style="color: var(--text-primary);">Refresh Point</h1>
+                </div>
+                <div class="flex items-center">
+                    <button id="themeToggleButton" onclick="toggleTheme()" class="theme-toggle-button text-xs sm:text-sm mr-1 sm:mr-4" aria-label="Toggle theme">
+                        </button>
+                    <nav class="ml-0 sm:ml-6 space-x-1 sm:space-x-4 hidden md:flex">
+                        <a href="#" class="nav-link px-2 py-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium active" onclick="showPage('home'); return false;">Home</a>
+                        <a href="#" class="nav-link px-2 py-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium" onclick="showPage('sickLeave'); return false;">Sick Leave</a>
+                        <a href="#" class="nav-link px-2 py-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium" onclick="showPage('famli'); return false;">CO FAMLI</a>
+                        <a href="#" class="nav-link px-2 py-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium" onclick="showPage('health'); return false;">Health Conditions</a>
+                        <a href="#" class="nav-link px-2 py-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium" onclick="showPage('medCertForm'); return false;">Medical Form</a>
+                        <a href="#" class="nav-link px-2 py-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium" onclick="showPage('resources'); return false;">Resources</a>
+                    </nav>
+                </div>
+                 <div class="md:hidden flex items-center">
+                    <button id="mobileMenuButton" class="p-2 rounded-md" style="color: var(--text-secondary);" aria-label="Open menu">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+             <div id="mobileMenu" class="md:hidden hidden pb-3">
+                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium active" onclick="showPage('home'); closeMobileMenu(); return false;">Home</a>
+                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium" onclick="showPage('sickLeave'); closeMobileMenu(); return false;">Sick Leave (HFWA)</a>
+                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium" onclick="showPage('famli'); closeMobileMenu(); return false;">CO FAMLI</a>
+                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium" onclick="showPage('health'); closeMobileMenu(); return false;">Health Conditions</a>
+                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium" onclick="showPage('medCertForm'); closeMobileMenu(); return false;">Medical Form</a>
+                <a href="#" class="nav-link block px-3 py-2 rounded-md text-base font-medium" onclick="showPage('resources'); closeMobileMenu(); return false;">Resources</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div id="home" class="page-content prose max-w-none">
+            <h2 class="text-3xl font-bold mb-2">Welcome to Refresh Point</h2>
+            <p class="text-lg mb-4 italic" style="color: var(--accent-color);">CO Leave & Breathe</p>
+            <p class="mb-4">Navigating workplace rights can be confusing. This resource is designed to provide clear, easily digestible information about key protections and benefits available to employees in Colorado.</p>
+            <p class="mb-4">Here, you'll find information on:</p>
+            <ul class="list-disc list-inside mb-4">
+                <li>Your rights to <strong onclick="showPage('sickLeave')" class="cursor-pointer hover:underline" style="color: var(--accent-color);">Paid Sick Leave (HFWA)</strong>.</li>
+                <li>The <strong onclick="showPage('famli')" class="cursor-pointer hover:underline" style="color: var(--accent-color);">Colorado Family and Medical Leave Insurance (FAMLI) Program</strong>.</li>
+                <li>How these programs cover various <strong onclick="showPage('health')" class="cursor-pointer hover:underline" style="color: var(--accent-color);">Physical and Mental Health Conditions</strong>, especially those arising from challenging work environments.</li>
+                <li>A look at the <strong onclick="showPage('medCertForm')" class="cursor-pointer hover:underline" style="color: var(--accent-color);">FAMLI Medical Certification Form</strong>.</li>
+                <li>Links to official <strong onclick="showPage('resources')" class="cursor-pointer hover:underline" style="color: var(--accent-color);">State Resources and Documents</strong>.</li>
+            </ul>
+            <p class="mb-4">We aim to empower you with knowledge so you can understand your rights and how to exercise them, as many of these benefits are not widely known or are poorly communicated by employers.</p>
+            
+            <blockquote class="p-4 my-8 border-l-4 rounded" style="border-color: var(--accent-color); background-color: var(--bg-secondary);">
+                <p class="italic leading-relaxed">"True social harmony grows naturally out of solidarity of interests. In a society where those who always work never have anything, while those who never work enjoy everything, solidarity of interests is non-existent; hence social harmony is but a myth."</p>
+                <p class="text-right not-italic text-sm mt-2">- Emma Goldman</p>
+            </blockquote>
+            <p>Use the navigation above to explore specific topics. If you have questions that aren't answered here, consider consulting official state resources or seeking legal advice.</p>
+        </div>
+
+        <div id="sickLeave" class="page-content hidden prose max-w-none">
+            <div class="flex items-center mb-4">
+                <img src="https://cdle.colorado.gov/sites/cdle/files/logo.svg" alt="CDLE Logo" class="h-12 mr-3" onerror="this.style.display='none'; this.onerror=null; this.src='https://placehold.co/100x50/ccc/333?text=CDLE+Logo';">
+                <h2 class="text-3xl font-bold">Paid Sick Leave: Healthy Families and Workplaces Act (HFWA)</h2>
+            </div>
+            <p>The Colorado Healthy Families and Workplaces Act (HFWA) is the primary law governing paid sick leave in Colorado. It requires employers to provide paid sick leave to their employees. This law was fully implemented for all employers as of January 1, 2022.</p>
+            <p>This page answers common questions about your rights under HFWA.</p>
+
+            <h3 class="text-2xl font-semibold mt-6 mb-3">Understanding Your HFWA Rights</h3>
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    Official Guidance on HFWA (INFO #6B & Act)
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>The Colorado Department of Labor and Employment (CDLE) provides detailed information about HFWA.</p>
+                        <ul>
+                            <li><strong>CDLE Page on Wage & Hour Laws (includes HFWA):</strong> <a href="https://cdle.colorado.gov/dlss/labor-laws-by-topic/wage-and-hour-laws-including-paid-sick-leave" target="_blank" rel="noopener noreferrer">CDLE: Wage & Hour Laws (including Paid Sick Leave)</a></li>
+                            <li><strong>CDLE Interpretive Notice & Formal Opinion (“INFO”) #6B (Overview of HFWA):</strong> This document offers a comprehensive overview of paid sick leave under HFWA.
+                                <a href="https://cdle.colorado.gov/sites/cdle/files/INFO%20%236B%20%20Employer_Employee%20Rights%20and%20Obligations%20Under%20the%20Healthy%20Families%20and%20Workplaces%20Act%205.29.2024%20%5Baccessible%5D.pdf" target="_blank" rel="noopener noreferrer">View INFO #6B</a>
+                            </li>
+                            <li><strong>Full Text of the Act:</strong> For the specific statutory language. (See section 8-13.3-410 for "Retaliatory personnel action prohibited").
+                                <a href="https://cdle.colorado.gov/sites/cdle/files/Colorado%20Healthy%20Families%20and%20Workplaces%20Act%20Revised%20August%207%202023%20%5Baccessible%5D.pdf" target="_blank" rel="noopener noreferrer">View Full Text of HFWA</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    Can I be marked with an attendance occurrence or disciplined for using sick leave?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p><strong>No, your employer cannot retaliate against you for using your accrued paid sick leave.</strong> This includes disciplinary actions like marking you with an attendance occurrence or "point," demoting you, reducing your hours, or terminating your employment.</p>
+                        <p>HFWA explicitly prohibits employers from discriminating or retaliating against an employee for requesting or using paid sick leave. If you believe you've been retaliated against, you have the right to file a complaint. (See "Retaliation Under Colorado Law" section below for more details).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    What if my sick days are part of my general PTO?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>If your employer provides a general Paid Time Off (PTO) policy that meets or exceeds the HFWA requirements for accrual and use, they don't have to provide separate sick leave. </p>
+                        <p>This means your PTO can be used for any reason, including sickness, without needing to specify it's "sick leave." Crucially, <strong>you are able to use this PTO any way you want.</strong> The employer cannot restrict your use of this PTO for sick reasons if it's meant to cover HFWA requirements, nor can they penalize you for using it for HFWA-qualifying reasons.</p>
+                        <p>The PTO policy must allow you to accrue and use leave at least as generously as HFWA (1 hour per 30 hours worked, up to 48 hours per year, usable as accrued).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    What if I have no PTO remaining but I'm sick and have HFWA leave?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>Under HFWA, you accrue paid sick leave (up to 48 hours per year) regardless of other PTO balances. If you have accrued HFWA sick leave, you are entitled to use it for qualifying reasons even if you have exhausted any other PTO (like vacation time) provided by your employer.</p>
+                        <p><strong>You are allowed to use your accrued HFWA sick days without retaliation, even if you have no other PTO remaining.</strong> Your employer must allow you to use the sick leave you have earned under HFWA.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="text-2xl font-semibold mt-8 mb-3">Key Features of HFWA</h3>
+             <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    Accrual, Usage, and Covered Reasons
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <ul>
+                            <li><strong>Accrual Rate:</strong> 1 hour of paid sick leave for every 30 hours worked.</li>
+                            <li><strong>Annual Cap:</strong> Employees can use up to 48 hours of paid sick leave per year. They can also carry over up to 48 hours of unused leave to the next year, but employers are not required to allow use of more than 48 hours in a single year.</li>
+                            <li><strong>Covered Uses:</strong>
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Your own mental or physical illness, injury, or health condition; preventive medical care.</li>
+                                    <li>Caring for a family member's mental or physical illness, injury, or health condition; or their preventive medical care.</li>
+                                    <li>Needs due to domestic abuse, sexual assault, or criminal harassment (for medical care, mental health care, legal services, victim services, or relocation).</li>
+                                    <li>When a public health emergency closes your workplace or your child's school/place of care.</li>
+                                    <li>For more examples, see the <strong onclick="showPage('health')" class="cursor-pointer hover:underline" style="color: var(--accent-color);">Physical & Mental Health Conditions</strong> page.</li>
+                                </ul>
+                            </li>
+                            <li><strong>No Retaliation:</strong> Employers cannot punish, discipline, or fire employees for using their HFWA leave.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-semibold mt-8 mb-3">Retaliation Under Colorado Law</h3>
+            <p>Colorado law protects employees from retaliation for exercising their rights under various labor laws, including HFWA.</p>
+            
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    Definition of Retaliation and Protected Activity (INFO #5A)
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>This CDLE document explains what constitutes illegal retaliation or interference, what employee actions are protected (like requesting HFWA leave), and what employer actions are considered "adverse."</p>
+                        <p>Key points from INFO #5A regarding HFWA:</p>
+                        <ul>
+                            <li><strong>Protected Activity Includes:</strong> Requesting or taking paid leave under HFWA, informing others about HFWA rights, or filing an HFWA complaint.</li>
+                            <li><strong>Adverse Actions Include:</strong> Termination, demotion, reduction in hours/pay, discipline (such as unwarranted warnings), threats, harassment, or any action that would dissuade a reasonable employee from exercising their rights.</li>
+                        </ul>
+                        <div class="callout">
+                            <p><strong>Important Note on Discipline:</strong></p>
+                            <p>Marking an attendance occurrence/point for using protected leave is considered an adverse action and a form of prohibited retaliation under HFWA.</p>
+                        </div>
+                        <p><a href="https://cdle.colorado.gov/sites/cdle/files/INFO%20%235A%20Retaliation%20Protections%2002.15.2024%20accessible.pdf" target="_blank" rel="noopener noreferrer">View CDLE INFO #5A: Retaliation Protections</a></p>
+                    </div>
+                </div>
+            </div>
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    Complaints, Investigations, and Remedies for Retaliation (INFO #5C)
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>If you believe you've been retaliated against for exercising your HFWA rights, this CDLE document outlines the process for filing a complaint with the Division of Labor Standards and Statistics, the investigation process, and potential remedies.</p>
+                        <p>Key points from INFO #5C:</p>
+                        <ul>
+                            <li>How to file a retaliation complaint.</li>
+                            <li>The Division's investigation process.</li>
+                            <li>Potential remedies, which can include back pay, reinstatement, damages, and penalties against the employer.</li>
+                        </ul>
+                        <p><a href="https://cdle.colorado.gov/sites/cdle/files/INFO%20%235C%20Complaints%2C%20Investigations%2C%20%26%20Remedies%2002.15.2024%20accessible.pdf" target="_blank" rel="noopener noreferrer">View CDLE INFO #5C: Complaints, Investigations, & Remedies</a></p>
+                    </div>
+                </div>
+            </div>
+            <p class="mt-4">For the most current and detailed information, always refer to the official <a href="https://cdle.colorado.gov/" target="_blank" rel="noopener noreferrer" style="color: var(--accent-color);">Colorado Department of Labor and Employment (CDLE) website</a>.</p>
+        </div>
+
+        <div id="famli" class="page-content hidden prose max-w-none">
+             <div class="flex items-center mb-4">
+                <img src="https://famli.colorado.gov/sites/famli/files/FAMLI%20Logo.png" alt="FAMLI Colorado Logo" class="h-12 mr-3" onerror="this.onerror=null; this.src='https://placehold.co/150x50/ccc/333?text=FAMLI+Logo';">
+                <h2 class="text-3xl font-bold">Colorado Family and Medical Leave Insurance (FAMLI) Program</h2>
+            </div>
+            <p>CO FAMLI is a state-run insurance program providing Colorado workers with paid leave for significant life events. It helps ensure you don't have to choose between your job and your health or family. This is an earned benefit, not welfare.</p>
+
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    What is FAMLI and what are its advantages?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>FAMLI provides partial wage replacement during leave.</p>
+                        <ul>
+                            <li><strong>Paid Time Off:</strong> Receive a portion of your wages.</li>
+                            <li><strong>Job Protection:</strong> Generally, if you've worked for your employer for at least 180 days.</li>
+                            <li><strong>Comprehensive Coverage:</strong> For your own serious health (physical or mental), family care, new child bonding, military deployment needs, and safe leave from domestic violence. (See <strong onclick="showPage('health')" class="cursor-pointer hover:underline" style="color: var(--accent-color);">Physical & Mental Health Conditions</strong> page for more).</li>
+                            <li><strong>Peace of Mind:</strong> Focus on health/family without total income loss.</li>
+                            <li><strong>Reduces Stigma:</strong> Normalizes taking leave for life events, including mental health.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    Who pays for CO FAMLI and who is eligible?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p><strong>Funding:</strong> Through premiums (0.9% of wages in 2024), typically split 50/50 between employee (0.45%) and employer (0.45%). Employers with <10 employees don't pay the employer share but remit the employee's.</p>
+                        <p><strong>Eligibility:</strong> Most CO employees who've earned at least $2,500 in wages (subject to FAMLI premiums) in their "base period" (first 4 of last 5 calendar quarters). This includes full-time, part-time, and seasonal workers. Self-employed can opt-in.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    How much does FAMLI pay?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>Benefits are on a sliding scale based on your average weekly wage vs. the state average:</p>
+                        <ul>
+                            <li>90% of your wage portion that is 50% or less of the state average.</li>
+                            <li>50% of your wage portion that is more than 50% of the state average.</li>
+                        </ul>
+                        <p>Max weekly benefit in 2024 was $1,100 (adjusted annually). Benefits are taxable; you can opt for withholding.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    What specific situations and conditions does FAMLI cover?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>FAMLI covers leave for:</p>
+                        <ul>
+                            <li><strong>Your Own Serious Health Condition:</strong> Physical or mental, including conditions like depression, anxiety, PTSD if certified by a healthcare provider.</li>
+                            <li><strong>Caring for a Family Member with a Serious Health Condition.</strong></li>
+                            <li><strong>Bonding with a New Child.</strong></li>
+                            <li><strong>Military Exigencies.</strong></li>
+                            <li><strong>Safe Leave</strong> (related to domestic violence, stalking, etc.).</li>
+                        </ul>
+                        <p>For detailed examples, especially concerning mental health and workplace stress, please see the <strong onclick="showPage('health')" class="cursor-pointer hover:underline" style="color: var(--accent-color);">Physical & Mental Health Conditions</strong> page.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    How do I apply for FAMLI?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p><strong>General Steps to Start a FAMLI Claim:</strong></p>
+                        <ol>
+                            <li><strong>Visit the Official FAMLI Website:</strong> Go to <a href="https://famli.colorado.gov/" target="_blank" rel="noopener noreferrer">famli.colorado.gov</a>.</li>
+                            <li><strong>Create or Log In to My FAMLI+:</strong> This is the online portal for managing claims.</li>
+                            <li><strong>Start a New Claim:</strong> Follow the prompts to begin your application. You'll typically need to provide:
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Your personal information.</li>
+                                    <li>Your employer's information.</li>
+                                    <li>The reason for your leave (e.g., own serious health condition, bonding with new child, caring for family member).</li>
+                                    <li>The type of leave you're requesting (continuous, intermittent, reduced schedule).</li>
+                                    <li>Anticipated start and end dates of your leave.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Obtain and Submit Documentation:</strong>
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>For your own serious health condition or to care for a family member, you will be provided with a <strong>Medical Certification form</strong>. You need to have the relevant healthcare provider complete this form. You'll then upload it to your My FAMLI+ account. See the <strong onclick="showPage('medCertForm')" class="cursor-pointer hover:underline" style="color: var(--accent-color);">Medical Form Facsimile</strong> page for an idea of what this form includes.</li>
+                                    <li>For bonding leave, you'll typically need proof of birth or placement.</li>
+                                    <li>Other types of leave will have their own documentation requirements.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Await Determination:</strong> The FAMLI Division will review your application and documentation and notify you of their decision.</li>
+                        </ol>
+                        <div class="callout">
+                            <p><strong>A Note on Notifying Your Employer:</strong></p>
+                            <p>CO FAMLI generally advises employees to notify their employer of their intent to take leave (usually 30 days in advance if foreseeable, or as soon as practicable otherwise). After this initial notification, you would proceed with your FAMLI application. Once FAMLI reviews your claim and the Medical Certification Form (if required) and approves your leave, you can then provide a more definitive update to your employer with the approved dates and details.</p>
+                            <p>However, some employees may feel more comfortable or secure waiting until their FAMLI claim is officially approved before having a detailed discussion with their employer, especially if they are concerned about potential misunderstandings or negative reactions should the claim be unexpectedly delayed or denied. While you must still provide notice as required, the exact timing of detailed discussions versus initial notification can be a personal consideration based on your workplace environment. You are not required to disclose your specific medical diagnosis to your employer.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    What do I tell my employer about FAMLI leave?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>You should generally provide your employer with at least 30 days' notice of your intent to take leave if the need is foreseeable. If it's not foreseeable, provide notice as soon as practicable.</p>
+                        <p><strong>Examples of what to tell your employer:</strong></p>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><em>"I am planning to apply for CO FAMLI leave for my own serious health condition, starting on [Start Date] and I anticipate returning on [End Date]. I will keep you updated as my application progresses and once I have approval from FAMLI."</em></li>
+                            <li><em>"I need to request FAMLI leave to care for a family member with a serious health condition. I expect this leave to begin around [Date] and last approximately [Duration]. I will provide more specific dates once confirmed with FAMLI."</em></li>
+                            <li><em>"I will be taking FAMLI leave for parental bonding starting on [Start Date] for [Number] weeks. I have initiated my claim with FAMLI."</em></li>
+                        </ul>
+                        <p>You do <strong>not</strong> need to provide your employer with your specific medical diagnosis or personal details of a safe leave situation. The FAMLI Division handles the verification of the qualifying reason. Your employer may require you to follow their usual procedures for requesting leave, as long as those procedures don't interfere with your FAMLI rights.</p>
+                        <p><strong>What you are NOT obligated to provide your employer:</strong></p>
+                        <ul>
+                            <li>Your specific medical diagnosis or detailed medical records.</li>
+                            <li>Detailed personal information about a situation qualifying for safe leave beyond what is necessary to establish the need for leave under FAMLI.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    How much time is available and how can I use it?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>Up to <strong>12 weeks</strong> of paid leave per application year. An additional <strong>4 weeks</strong> (total 16) for serious health conditions due to pregnancy/childbirth complications.</p>
+                        <p>Leave can be taken: <strong>Continuous</strong> (all at once), <strong>Intermittent</strong> (separate blocks), or as a <strong>Reduced Schedule</strong>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-semibold mt-8 mb-4">Job Protection:</h3>
+            <p>If you've worked for your current employer for at least 180 days before FAMLI leave, you're generally entitled to reinstatement to the same or equivalent position. Employers cannot retaliate for taking FAMLI leave.</p>
+
+            <p class="mt-4">For the most accurate and up-to-date information, applications, and FAQs, visit the official <a href="https://famli.colorado.gov/" target="_blank" rel="noopener noreferrer" style="color: var(--accent-color);">CO FAMLI website</a>.</p>
+        </div>
+
+        <div id="health" class="page-content hidden prose max-w-none">
+            <h2 class="text-3xl font-bold mb-6">Physical & Mental Health Under Colorado Leave Laws</h2>
+            <p>Both the Healthy Families and Workplaces Act (HFWA) and the CO FAMLI program provide job-protected leave for a variety of physical and mental health needs. Understanding how these apply, especially in stressful work environments, is crucial.</p>
+            <div class="callout">
+                 <p><strong>Disclaimer:</strong> The DSM-5 and ICD-10-CM codes mentioned below are examples for informational purposes only and do not constitute medical or billing advice. Diagnosis and code selection must be done by qualified healthcare and billing professionals based on individual assessment. Eligibility for leave is determined by the respective state agencies based on official documentation and program rules.</p>
+            </div>
+
+            <h3 class="text-2xl font-semibold mt-8 mb-3">Mental Health, Workplace Stress, and Leave</h3>
+            <p>Challenging work environments, including those with excessive overtime, high pressure, or toxic dynamics, can significantly impact mental health. Both HFWA and FAMLI can offer support if these conditions lead to diagnosable health issues.</p>
+
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    Mental Health under HFWA (Paid Sick Leave)
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>HFWA allows you to use your accrued paid sick leave (up to 48 hours/year) for:</p>
+                        <ul>
+                            <li>Your own mental or physical illness, injury, or health condition that prevents work.</li>
+                            <li>Obtaining preventive medical care, or medical diagnosis/care/treatment of any mental or physical illness, injury, or health condition.</li>
+                        </ul>
+                        <p><strong>Examples related to mental health & workplace stress:</strong></p>
+                        <ul>
+                            <li>Taking a day off due to severe anxiety or a panic attack that makes it impossible to work effectively.</li>
+                            <li>Attending a therapy appointment for stress, depression, or anxiety.</li>
+                            <li>Needing a "mental health day" when symptoms of a diagnosed condition (e.g., depression flare-up) prevent you from working, even if you don't see a doctor that specific day (though documentation rules apply for absences of 4+ consecutive workdays).</li>
+                            <li>Recovering from acute stress symptoms (e.g., severe insomnia, inability to concentrate) that temporarily prevent you from performing your job.</li>
+                        </ul>
+                        <p><strong>Important Note for HFWA:</strong> While you can use HFWA for these reasons, if an absence is for 4 or more consecutive workdays, your employer can request reasonable documentation. This doesn't necessarily mean a doctor's note for every instance, especially for shorter absences. (Refer to the Sick Leave page for documentation details).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    Mental Health under CO FAMLI (Paid Family & Medical Leave Insurance)
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>FAMLI provides longer-term paid leave (up to 12 weeks) for your own "serious health condition." This explicitly includes mental health conditions that incapacitate you from performing essential job functions or require ongoing medical treatment.</p>
+                        <p><strong>Examples related to mental health & workplace stress (requiring healthcare provider certification):</strong></p>
+                        <ul>
+                            <li><strong>Diagnosed Depression or Anxiety Disorders:</strong> If severe symptoms (e.g., inability to concentrate, persistent fatigue, panic attacks, social withdrawal) stemming from or exacerbated by a toxic work environment or chronic overtime abuse make you unable to work for an extended period. 
+                                <br><em class="text-xs">(Potential codes: ICD-10-CM F32.x - Major depressive disorder, single episode; F33.x - Major depressive disorder, recurrent; F41.1 - Generalized anxiety disorder; F41.0 - Panic disorder. Diagnosis based on DSM-5 criteria.)</em>
+                            </li>
+                            <li><strong>Post-Traumatic Stress Disorder (PTSD):</strong> If workplace events (e.g., harassment, witnessing a traumatic incident) lead to PTSD requiring time off for treatment and recovery.
+                                <br><em class="text-xs">(Potential codes: ICD-10-CM F43.1 - Post-traumatic stress disorder. Diagnosis based on DSM-5 criteria.)</em>
+                            </li>
+                            <li><strong>Burnout Leading to a Serious Health Condition:</strong> While "burnout" itself isn't a primary medical diagnosis for FAMLI, if chronic workplace stress leads to a clinically diagnosed condition like severe depression, an anxiety disorder, or a stress-related physical illness that meets the "serious health condition" criteria, it could qualify.
+                                <br><em class="text-xs">(Potential codes: The underlying diagnosed condition's code, e.g., F32.x/F33.x for depression. Note: ICD-10-CM Z73.0 is for "Burn-out" as a factor influencing health status, not typically a primary qualifying condition for FAMLI itself without a co-occurring serious health condition.)</em>
+                            </li>
+                            <li><strong>Inpatient or Intensive Outpatient Treatment:</strong> Needing time off for admission to a mental health facility or participation in an intensive therapy program for a qualifying serious health condition.
+                                <br><em class="text-xs">(Potential codes: Dependent on the underlying condition requiring treatment, e.g., F33.2 for severe recurrent major depression requiring hospitalization.)</em>
+                            </li>
+                            <li><strong>Adjustment Disorders:</strong> If a significant workplace stressor leads to an adjustment disorder with severe symptoms that impair your ability to work and require treatment.
+                                <br><em class="text-xs">(Potential codes: ICD-10-CM F43.2x - Adjustment disorders. Diagnosis based on DSM-5 criteria.)</em>
+                            </li>
+                        </ul>
+                        <p><strong>Key for FAMLI:</strong> A healthcare provider (doctor, psychologist, licensed therapist, etc.) must certify that you have a serious health condition that prevents you from working or requires ongoing treatment. The focus is on the diagnosed condition and its impact on your ability to work, though the workplace stressors can be relevant information for your provider.</p>
+                        <p>"Lack of motivation" or "feeling overwhelmed" on their own are not typically sufficient for FAMLI unless they are symptoms of an underlying, certified serious health condition.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-semibold mt-8 mb-3">Physical Health and Leave</h3>
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    Physical Health under HFWA (Paid Sick Leave)
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>HFWA covers shorter-term physical health needs:</p>
+                        <ul>
+                            <li>Common illnesses like the flu, colds, infections.</li>
+                            <li>Minor injuries (e.g., a sprain that prevents you from doing your job for a day or two).</li>
+                            <li>Preventive care: doctor check-ups, dental appointments, vaccinations.</li>
+                            <li>Diagnostic appointments or treatments for an existing condition.</li>
+                            <li>Caring for a family member with similar short-term physical health needs.</li>
+                        </ul>
+                         <p><strong>Example from overtime abuse:</strong> Developing repetitive strain injuries (e.g., carpal tunnel, back pain) due to long hours and poor ergonomics, requiring a doctor's visit or a day of rest to manage acute pain.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    Physical Health under CO FAMLI (Paid Family & Medical Leave Insurance)
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>FAMLI is for "serious health conditions" that are more substantial or require longer recovery:</p>
+                        <ul>
+                            <li>Surgery and recovery.
+                                <br><em class="text-xs">(Potential codes: Vary widely based on surgery type, e.g., ICD-10-CM codes from Chapters corresponding to body system, plus Z51.89 - Encounter for other specified aftercare.)</em>
+                            </li>
+                            <li>Hospitalization (inpatient care).
+                                <br><em class="text-xs">(Potential codes: Dependent on reason for hospitalization.)</em>
+                            </li>
+                            <li>Chronic conditions requiring ongoing treatment or causing episodic incapacity (e.g., severe migraines - G43.x, autoimmune flare-ups - M30-M36 range).</li>
+                            <li>Serious injuries requiring extended recovery.</li>
+                            <li>Pregnancy-related serious health conditions (including prenatal care - Z34.x, recovery from childbirth - Z39.x, and complications - O00-O9A range).</li>
+                            <li>Caring for a family member with a serious physical health condition.</li>
+                        </ul>
+                        <p><strong>Example from overtime abuse:</strong> A stress-induced physical condition like severe hypertension (I10) or a heart condition (e.g., I20-I25 for ischemic heart diseases) exacerbated by chronic overwork, requiring extended medical leave for stabilization and treatment, as certified by a doctor.</p>
+                        <p><strong>Remember:</strong> For FAMLI, a healthcare provider must certify the serious health condition.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-semibold mt-8 mb-3">Important Considerations</h3>
+            <ul>
+                <li><strong>Documentation is Key:</strong> Especially for FAMLI, and for HFWA leave of 4+ consecutive workdays, medical certification or appropriate documentation is generally required. Be proactive in communicating with your healthcare provider.</li>
+                <li><strong>Employer Policies:</strong> Familiarize yourself with your employer's specific policies for requesting leave, but remember these policies cannot infringe upon your rights under HFWA or FAMLI.</li>
+                <li><strong>Seek Clarity:</strong> If unsure, refer to the official CDLE and FAMLI Colorado websites, or consult with an employment law professional.</li>
+            </ul>
+        </div>
+
+        <div id="medCertForm" class="page-content hidden prose max-w-2xl mx-auto"> 
+            <div class="text-center mb-6 mt-4"> 
+                <img src="https://famli.colorado.gov/sites/famli/files/FAMLI%20Logo.png" alt="FAMLI Colorado Logo" class="h-16 mx-auto mb-2" onerror="this.onerror=null; this.src='https://placehold.co/200x60/ccc/333?text=FAMLI+Logo';">
+                <h2 class="text-2xl font-bold !text-[var(--text-primary)]">Facsimile: Medical Certification - Serious Health Condition</h2> <p class="text-sm !text-[var(--text-secondary)]">For Informational Purposes Only</p>
+            </div>
+
+            <div class="mb-4 p-3 rounded-md border" style="border-color: var(--accent-color); background-color: var(--bg-secondary);">
+                <p class="!text-[var(--text-secondary)]">
+                    <strong>Important:</strong> This is a simplified representation of the official FAMLI Medical Certification form. The actual form you receive from the My FAMLI+ portal when you file a claim will be pre-filled with your specific claim information. Your healthcare provider must complete that official form. All fields marked with an asterisk (<span class="required-ast">*</span>) on the official form are typically required.
+                </p>
+            </div>
+
+            <div class="form-section">
+                <h3 class="!text-[var(--accent-color)]">Claimant/Patient Information</h3>
+                <div class="form-field">
+                    <label class="!text-[var(--text-primary)]">Claimant's first name<span class="required-ast">*</span></label>
+                    <div class="input-placeholder">[Pre-filled on official form]</div>
+                </div>
+                <div class="form-field">
+                    <label class="!text-[var(--text-primary)]">Claimant's last name<span class="required-ast">*</span></label>
+                    <div class="input-placeholder">[Pre-filled on official form]</div>
+                </div>
+                <div class="form-field">
+                    <label class="!text-[var(--text-primary)]">Claimant's date of birth<span class="required-ast">*</span></label>
+                    <div class="input-placeholder">[Pre-filled on official form]</div>
+                </div>
+                 <div class="form-field">
+                    <label class="!text-[var(--text-primary)]">Claim ID</label>
+                    <div class="input-placeholder">[Pre-filled on official form]</div>
+                </div>
+                <p class="mt-2 text-sm !text-[var(--text-secondary)]"><em>The remaining sections are typically completed by the healthcare provider.</em></p>
+            </div>
+
+            <div class="form-section">
+                <h3 class="!text-[var(--accent-color)]">Pregnancy Claim Information</h3>
+                <div class="form-field">
+                    <label class="!text-[var(--text-primary)]">Is this a pregnancy-related claim?<span class="required-ast">*</span> (Yes / No)</label>
+                    <div class="input-placeholder"></div>
+                </div>
+                <div class="form-field">
+                    <label class="!text-[var(--text-primary)]">Is there a pregnancy or childbirth complication?<span class="required-ast">*</span> (Yes / No)</label>
+                    <div class="input-placeholder"></div>
+                    <p class="note !text-[var(--text-secondary)]">C-section deliveries are not always considered a complication; further explanation may be required.</p>
+                </div>
+                <div class="form-field">
+                    <label class="!text-[var(--text-primary)]">Delivery date/due date/approximate date of pregnancy loss (if applicable):</label>
+                    <div class="input-placeholder"></div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="!text-[var(--accent-color)]">Claimant/Patient Medical Information</h3>
+                <div class="form-field">
+                    <label class="!text-[var(--text-primary)]">Was this a workplace related injury or illness?<span class="required-ast">*</span> (Yes / No)</label>
+                    <div class="input-placeholder"></div>
+                </div>
+                <div class="form-field">
+                    <label class="!text-[var(--text-primary)]">Does this patient require time away from work due to their condition?<span class="required-ast">*</span> (Yes / No)</label>
+                    <div class="input-placeholder"></div>
+                </div>
+                <div class="form-field">
+                    <label class="!text-[var(--text-primary)]">Primary ICD-10-CM code<span class="required-ast">*</span></label>
+                    <div class="input-placeholder"></div>
+                    <p class="note !text-[var(--text-secondary)]">Should be specific to this period of time, not the overarching illness.</p>
+                </div>
+                <div class="form-field">
+                    <label class="!text-[var(--text-primary)]">Primary ICD-10-CM code description<span class="required-ast">*</span></label>
+                    <div class="input-placeholder"></div>
+                </div>
+                <div class="form-field">
+                    <label class="!text-[var(--text-primary)]">Secondary ICD-10-CM code (if applicable):</label>
+                    <div class="input-placeholder"></div>
+                </div>
+                <div class="form-field">
+                    <label class="!text-[var(--text-primary)]">Secondary ICD-10-CM code description (if applicable):</label>
+                    <div class="input-placeholder"></div>
+                </div>
+                <div class="form-field">
+                    <label class="!text-[var(--text-primary)]">Briefly summarize the serious health condition AND why it requires time away from work<span class="required-ast">*</span>:</label>
+                    <div class="input-placeholder" style="min-height: 60px;"></div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="!text-[var(--accent-color)]">Claimant/Patient Leave Information</h3>
+                <p class="note !text-[var(--text-secondary)] mb-2">Provide the start and end dates for this claimant's leave based on their serious health condition/ICD-10-CM code(s). Leave claims cannot exceed 6 months.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-field">
+                        <label class="!text-[var(--text-primary)]">Leave start date<span class="required-ast">*</span>:</label>
+                        <div class="input-placeholder"></div>
+                    </div>
+                    <div class="form-field">
+                        <label class="!text-[var(--text-primary)]">Leave end date<span class="required-ast">*</span>:</label>
+                        <div class="input-placeholder"></div>
+                    </div>
+                </div>
+                <h4 class="font-semibold mt-3 mb-1 !text-[var(--text-primary)]">Type of Leave</h4>
+                <p class="note !text-[var(--text-secondary)] mb-2">Select Patient's leave type<span class="required-ast">*</span> (Continuous leave / Intermittent leave / Reduced leave). Only one leave type can be selected per claim.</p>
+                <div class="input-placeholder mb-3">[Selection Placeholder: Continuous / Intermittent / Reduced]</div>
+                
+                <p class="note !text-[var(--text-secondary)] mb-2">If requesting Intermittent leave (Only fill in one of the blank spaces):</p>
+                <div class="form-field">
+                    <label class="!text-[var(--text-primary)]">The patient may be incapacitated and unable to work up to a maximum of ______ hours per week OR ______ hours per 30-day period for the entire claim duration indicated by the leave dates.<span class="required-ast">*</span></label>
+                    <div class="input-placeholder"></div>
+                </div>
+
+                <p class="note !text-[var(--text-secondary)] mb-2 mt-3">If requesting Reduced leave:</p>
+                <div class="form-field">
+                    <label class="!text-[var(--text-primary)]">The patient is unable to work a typical work schedule. The patient may work a maximum of ______ hours per week for the entire claim duration indicated by the leave dates.<span class="required-ast">*</span></label>
+                    <div class="input-placeholder"></div>
+                </div>
+                 <p class="note !text-[var(--text-secondary)] mt-3">Do not use fractions or "0" for hours. Avoid date/number ranges for intermittent/reduced parameters. If condition changes gradually, separate claims may be needed.</p>
+            </div>
+
+            <div class="form-section">
+                <h3 class="!text-[var(--accent-color)]">Health Care Provider's Information and Signature</h3>
+                <p class="note !text-[var(--text-secondary)] mb-3">Provider declares under penalty of perjury that information is true, condition is serious, and they are authorized to certify.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-field">
+                        <label class="!text-[var(--text-primary)]">Provider's first name<span class="required-ast">*</span>:</label>
+                        <div class="input-placeholder"></div>
+                    </div>
+                    <div class="form-field">
+                        <label class="!text-[var(--text-primary)]">Provider's last name<span class="required-ast">*</span>:</label>
+                        <div class="input-placeholder"></div>
+                    </div>
+                    <div class="form-field">
+                        <label class="!text-[var(--text-primary)]">State license number<span class="required-ast">*</span>:</label>
+                        <div class="input-placeholder"></div>
+                    </div>
+                     <div class="form-field">
+                        <label class="!text-[var(--text-primary)]">License state<span class="required-ast">*</span>:</label>
+                        <div class="input-placeholder"></div>
+                    </div>
+                    <div class="form-field">
+                        <label class="!text-[var(--text-primary)]">NPI number (Required if practicing outside of Colorado):</label>
+                        <div class="input-placeholder"></div>
+                    </div>
+                    <div class="form-field">
+                        <label class="!text-[var(--text-primary)]">Type of practice/medical specialty<span class="required-ast">*</span>:</label>
+                        <div class="input-placeholder"></div>
+                    </div>
+                </div>
+                <div class="form-field mt-2">
+                    <label class="!text-[var(--text-primary)]">Practice name<span class="required-ast">*</span>:</label>
+                    <div class="input-placeholder"></div>
+                </div>
+                <div class="form-field">
+                    <label class="!text-[var(--text-primary)]">Practice address<span class="required-ast">*</span>:</label>
+                    <div class="input-placeholder"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <div class="form-field">
+                        <label class="!text-[var(--text-primary)]">Phone number<span class="required-ast">*</span>:</label>
+                        <div class="input-placeholder"></div>
+                    </div>
+                     <div class="form-field">
+                        <label class="!text-[var(--text-primary)]">Email address (optional):</label>
+                        <div class="input-placeholder"></div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <div class="form-field">
+                        <label class="!text-[var(--text-primary)]">Signature<span class="required-ast">*</span>:</label>
+                        <div class="input-placeholder" style="min-height: 50px;">[Provider's Signature Area]</div>
+                    </div>
+                    <div class="form-field">
+                        <label class="!text-[var(--text-primary)]">Today's date<span class="required-ast">*</span>:</label>
+                        <div class="input-placeholder"></div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center text-xs mt-6 !text-[var(--text-secondary)]">v1.2 (Based on sample form structure)</p>
+            <p class="text-center text-xs !text-[var(--text-secondary)]">FAMLI Contact: 1-866-CO-FAMLI (1-866-263-2654) | famli.colorado.gov</p>
+        </div>
+        
+        <div id="resources" class="page-content hidden prose max-w-none">
+            <h2 class="text-3xl font-bold mb-6">Official Resources & Key Documents</h2>
+            <p class="mb-4">This section provides links to official toolkits, key documents, and websites for Colorado employee rights. Click on each item to learn more.</p>
+            
+            <h3 class="text-2xl font-semibold mt-6 mb-3">CO FAMLI Program Resources</h3>
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    FAMLI Toolkit (Official)
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>Access a comprehensive collection of resources directly from the CO FAMLI program, including forms, guides, and informational materials for both employees and employers.</p>
+                        <p><a href="https://famli.colorado.gov/resources/famli-toolkit" target="_blank" rel="noopener noreferrer">View the Official FAMLI Toolkit</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    FAMLI Employee Handbook
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>This handbook provides a detailed overview of the FAMLI program from an employee's perspective. It typically covers eligibility, types of leave, how to apply, benefit calculations, and employee rights and responsibilities.</p>
+                        <p><strong>Key Highlights (Refer to document for full specifics):</strong></p>
+                        <ul>
+                            <li>Detailed explanation of qualifying reasons for leave (Pages 4, 16-18).</li>
+                            <li>Step-by-step guide to the application process (Pages 8-10, 12).</li>
+                            <li>Information on coordinating FAMLI leave with other types of leave (Page 11).</li>
+                            <li>Job protection rights (Page 14).</li>
+                            <li>Payroll deductions (Page 5) and benefit amounts (Page 7).</li>
+                        </ul>
+                        <p><a href="https://drive.google.com/file/d/1R4_RUUJYYeICGaRNLuC73XiAGUBt2FjU/view?usp=sharing" target="_blank" rel="noopener noreferrer">View FAMLI Employee Handbook</a></p>
+                         <p class="text-xs italic mt-2">This is based on "FAMLI-Employee-Handbook-English.pdf" (Updated May 2024).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    FAMLI Program Notice
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>Employers are required to provide this notice to their employees to inform them about the CO FAMLI program. It outlines basic information about the program, employee rights, and how to get more information.</p>
+                        <p><strong>Key Highlights (Refer to document for full specifics):</strong></p>
+                        <ul>
+                            <li>Overview of FAMLI benefits and qualifying conditions.</li>
+                            <li>Employee contributions and rights, including non-retaliation.</li>
+                            <li>Information about filing claims and job protection.</li>
+                        </ul>
+                        <p><a href="https://drive.google.com/file/d/14IrXfWgapNXzE1qhcaIw1h5qdP2kF7z2/view?usp=sharing" target="_blank" rel="noopener noreferrer">View FAMLI Program Notice</a></p>
+                        <p class="text-xs italic mt-2">This is based on "FAMLI-Required-Program-Notice-English-Language.pdf" (Updated Dec 2023).</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    FAMLI Application Checklist
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>A helpful checklist to ensure you have all the necessary information and documentation prepared before starting your FAMLI application through My FAMLI+.</p>
+                        <p><strong>Key Items Often Included (Refer to document for full specifics):</strong></p>
+                        <ul>
+                            <li>Personal contact and identification information (SSN/ITIN).</li>
+                            <li>Employer details (including FEIN).</li>
+                            <li>Healthcare provider information (if applicable).</li>
+                            <li>Documentation for bonding leave (birth certificate, etc.).</li>
+                            <li>Leave dates and type (continuous, intermittent, reduced).</li>
+                            <li>Bank account information for direct deposit.</li>
+                        </ul>
+                        <p><a href="https://drive.google.com/file/d/1Rl_UwZmikYXU8riN9kcAgA9MxaKcIhch/view?usp=sharing" target="_blank" rel="noopener noreferrer">View FAMLI Application Checklist</a></p>
+                        <p class="text-xs italic mt-2">This is based on "My-FAMLI+-Application-Checklist.pdf".</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    FAMLI and Other Types of Leave
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>This document explains how CO FAMLI interacts with other leave entitlements, such as employer-provided paid time off (PTO), short-term/long-term disability (STD/LTD), the federal Family and Medical Leave Act (FMLA), Unemployment Insurance, Workers' Compensation, and HFWA.</p>
+                        <p><strong>Key Considerations (Refer to document for full specifics):</strong></p>
+                        <ul>
+                            <li>FAMLI runs concurrently with FMLA.</li>
+                            <li>Employees can choose (but cannot be required) to use PTO/sick leave to top-off FAMLI benefits (with written agreement).</li>
+                            <li>Coordination with STD/LTD policies (employer must provide written notice of restrictions).</li>
+                            <li>Cannot collect FAMLI and Unemployment/Workers' Comp for the same absence.</li>
+                        </ul>
+                        <p><a href="https://drive.google.com/file/d/115QyRutLFyLgMqtM6nkn4yML2F9CrEos/view?usp=sharing" target="_blank" rel="noopener noreferrer">View FAMLI and Other Types of Leave Info</a></p>
+                        <p class="text-xs italic mt-2">This is based on "My-FAMLI+-FAMLI-&-Other-Types-Of-Leave.pdf".</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    FAMLI vs. FMLA
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <p>A comparison highlighting the differences and similarities between the Colorado FAMLI program (paid, state-run) and the federal Family and Medical Leave Act (FMLA, unpaid, federal).</p>
+                        <p><strong>Key Differences (Refer to document for full specifics):</strong></p>
+                        <ul>
+                            <li><strong>Paid vs. Unpaid:</strong> FAMLI is paid; FMLA is unpaid.</li>
+                            <li><strong>Eligibility:</strong> FAMLI covers most CO employees from day one (if wage requirement met); FMLA has employer size (50+ employees) and employee tenure/hours requirements.</li>
+                            <li><strong>Job Protection:</strong> FAMLI offers job protection after 180 days of employment; FMLA after 1,250 hours/12 months.</li>
+                            <li>FAMLI is designed to run concurrently with FMLA.</li>
+                        </ul>
+                        <p><a href="https://drive.google.com/file/d/1L45je-YyHFGXCSIbCp9Km0ygsfdZ_BX2/view?usp=sharing" target="_blank" rel="noopener noreferrer">View FAMLI vs. FMLA Comparison</a></p>
+                        <p class="text-xs italic mt-2">This is based on "FAMLI vs FMLA.pdf".</p>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="text-2xl font-semibold mt-8 mb-3">Colorado Department of Labor & Employment (CDLE) Resources</h3>
+             <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    HFWA (Paid Sick Leave) Specific Resources
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                         <ul>
+                            <li><strong>CDLE Page on Wage & Hour Laws (includes HFWA):</strong> <a href="https://cdle.colorado.gov/dlss/labor-laws-by-topic/wage-and-hour-laws-including-paid-sick-leave" target="_blank" rel="noopener noreferrer">CDLE: Wage & Hour Laws (including Paid Sick Leave)</a></li>
+                            <li><strong>CDLE INFO #6B (Overview of HFWA):</strong> <a href="https://cdle.colorado.gov/sites/cdle/files/INFO%20%236B%20%20Employer_Employee%20Rights%20and%20Obligations%20Under%20the%20Healthy%20Families%20and%20Workplaces%20Act%205.29.2024%20%5Baccessible%5D.pdf" target="_blank" rel="noopener noreferrer">View INFO #6B</a></li>
+                            <li><strong>Full Text of HFWA:</strong> <a href="https://cdle.colorado.gov/sites/cdle/files/Colorado%20Healthy%20Families%20and%20Workplaces%20Act%20Revised%20August%207%202023%20%5Baccessible%5D.pdf" target="_blank" rel="noopener noreferrer">View Full Text</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="my-6">
+                <button class="accordion-button w-full text-left p-4 rounded-t-md font-semibold flex justify-between items-center" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                    Retaliation Protection Resources (CDLE)
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform duration-300 chevron">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="accordion-content content-card rounded-b-md" style="border-top: none;">
+                    <div class="accordion-content-inner">
+                        <ul>
+                            <li><strong>CDLE INFO #5A (Definition of Retaliation):</strong> <a href="https://cdle.colorado.gov/sites/cdle/files/INFO%20%235A%20Retaliation%20Protections%2002.15.2024%20accessible.pdf" target="_blank" rel="noopener noreferrer">View INFO #5A</a></li>
+                            <li><strong>CDLE INFO #5C (Complaints & Remedies for Retaliation):</strong> <a href="https://cdle.colorado.gov/sites/cdle/files/INFO%20%235C%20Complaints%2C%20Investigations%2C%20%26%20Remedies%2002.15.2024%20accessible.pdf" target="_blank" rel="noopener noreferrer">View INFO #5C</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-semibold mt-8 mb-4">General Official Links:</h3>
+            <ul>
+                <li>
+                    <div class="flex items-center mt-2">
+                         <img src="https://famli.colorado.gov/sites/famli/files/FAMLI%20Logo.png" alt="FAMLI Colorado Logo" class="h-8 mr-2" onerror="this.onerror=null; this.src='https://placehold.co/100x30/ccc/333?text=FAMLI';">
+                        <a href="https://famli.colorado.gov/" target="_blank" rel="noopener noreferrer">Official CO FAMLI Program Website</a>
+                    </div>
+                </li>
+                <li>
+                    <div class="flex items-center mt-2">
+                         <img src="https://cdle.colorado.gov/sites/cdle/files/logo.svg" alt="CDLE Logo" class="h-8 mr-2" onerror="this.style.display='none'; this.onerror=null; this.src='https://placehold.co/80x30/ccc/333?text=CDLE';">
+                        <a href="https://cdle.colorado.gov/" target="_blank" rel="noopener noreferrer">Colorado Department of Labor and Employment (CDLE) - Main Site</a>
+                    </div>
+                </li>
+                 <li>
+                    <div class="flex items-center mt-2">
+                         <img src="https://cdle.colorado.gov/sites/cdle/files/logo.svg" alt="CDLE Logo" class="h-8 mr-2" onerror="this.style.display='none'; this.onerror=null; this.src='https://placehold.co/80x30/ccc/333?text=CDLE';">
+                        <a href="https://cdle.colorado.gov/dlss/labor-laws-by-topic/wage-and-hour-laws-including-paid-sick-leave" target="_blank" rel="noopener noreferrer">CDLE: Wage & Hour Laws (including Paid Sick Leave)</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </main>
+
+    <footer class="py-6 shadow-inner" style="background-color: var(--bg-secondary); border-top: 1px solid var(--border-color);">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-sm" style="color: var(--text-secondary);">&copy; <span id="currentYear"></span> Refresh Point. For informational purposes only. Consult with a legal professional for advice on specific situations.</p>
+            <p class="text-xs mt-1" style="color: var(--text-secondary);">Last updated: June 1, 2025</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
